@@ -1,13 +1,18 @@
 {{> base}}
-    <div id="divJumboTron" class="jumbotron jumbotron-fluid">
+    <div class="jumbotron jumbotron-fluid">
     <div class="container">
-        <h1 id="themeTitle" class="display-1"><span class="fa fa-user-secret"></span>Security App</h1>
-        <p id="themeColor" class="lead">Web Application for authentication demonstration. </p>
+        <h1 class="display-1"><span class="fa fa-user-secret"></span>Security App</h1>
+        <p class="lead">Web Application for authentication demonstration. </p>
     </div>
     </div>
 
     <div class="container">
-        <h1>Login in google</h1>
-        <a href="http://localhost:3000/login"><img src="/images/google.png"  style="padding-bottom:10px" width="100px"></a>
+        <div align="center">
+                <button type="button" class="btn btn-google"><a href="http://localhost:3000/google">
+                    <div id="gImg"><img src="/images/google.png" width="30px"></div>
+                    <div id="gTxt">Sign in with Google</div>
+                </a>
+                </button>
+        </div>
     </div>
 {{> footer}}
