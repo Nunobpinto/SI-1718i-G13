@@ -6,7 +6,8 @@ const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const hbs = require('hbs')
 const csrf = require('csurf')
-const router = require('./routes/routes')
+const index = require('./routes/index')
+const authRoutes = require('./routes/auth')
 
 const app = express()
 
@@ -22,7 +23,9 @@ app.use(bodyParser.urlencoded({extended: false}))
 app.use(cookieParser())
 app.use(csrf({cookie: true}))
 app.use(express.static(path.join(__dirname, 'public')))
-app.use(router)
+
+app.use(index)
+app.use('/login', authRoutes)
 
 // catch 404 and forward to error andler
 app.use(function(req, res, next) {
