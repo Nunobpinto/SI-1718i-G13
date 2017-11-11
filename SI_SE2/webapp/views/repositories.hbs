@@ -1,0 +1,15 @@
+{{> base}}
+{{>navbar}}
+<h1 id="repoTitle" class="lead">{{message}}</h1>
+<table id="repoTable" class="table table-bordered ">
+    <tr>
+        <th class="lead">Repositories</th>
+    </tr>
+    {{#each list}}
+        <tr>
+            <td>
+                <a href='/github/repos/{{fullName}}/milestones'>{{fullName}}</a>
+            </td>
+        </tr>
+    {{/each}}
+</table>

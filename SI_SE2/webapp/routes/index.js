@@ -4,12 +4,9 @@ const express = require('express')
 const router = express.Router()
 const validator = require('../routes/validation')
 
-router.get(
-	'/',
-	validator.checkGoogleAuth,
-	function(req, res) {
-		res.redirect('/home')
-	})
+router.get('/', function(req, res) {
+	res.redirect('/home')
+})
 
 router.get(
 	'/home',

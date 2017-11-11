@@ -49,13 +49,13 @@ function getPrivateRepositories(access_token,cb) {
 					return cb(err)
 				}
 				body = JSON.parse(body)
-				cb(null, {user : body.login,data})
+				cb(null, {user : body.login, repos: data})
 			})
 		})
 }
 
 function getMilestones(access_token,fullName, cb) {
-	const githubMilestonesURI = `https://api.github.com/repos/${fullName}/milestones?state=alll`
+	const githubMilestonesURI = `https://api.github.com/repos/${fullName}/milestones?state=all`
 	request(githubMilestonesURI,
 		{
 			headers: {

@@ -1,0 +1,32 @@
+{{> base}}
+{{>navbar}}
+<h1 id="" class="lead">{{message}}</h1>
+<table id="" class="table table-bordered ">
+    <tr>
+        <th class="lead">Title</th>
+        <th class="lead">Description</th>
+        <th class="lead">Created</th>
+        <th class="lead">Closed</th>
+        <th class="lead">Due</th>
+    </tr>
+    {{#each list}}
+        <tr>
+            <td>
+                {{title}}
+            </td>
+            <td>
+                {{description}}
+            </td>
+            <td>
+                {{created}}
+            </td>
+            <td>
+                {{closed}}
+            </td>
+            <td>
+                {{due}}
+            </td>
+
+        </tr>
+    {{/each}}
+</table>

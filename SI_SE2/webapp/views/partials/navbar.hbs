@@ -1,10 +1,10 @@
 <div id="divnavBar" class="container">
     <nav class="navbar navbar-expand-lg">
         <div>
-            <img id="userImg" src="http://media.comicbook.com/files/img/default-movie.png">
+            <img id="userImg" src={{user.picture}}>
         </div>
         <div class="col">
-            <span id="navItemColor">Welcome+USER!</span>
+            <span id="navItemColor">Welcome, {{user.name}}!</span>
         </div>
         <div class="col">
             <button id="marginSignOutBtn" type="button" class="btn btn-outline-dark">Sign Out</button>
