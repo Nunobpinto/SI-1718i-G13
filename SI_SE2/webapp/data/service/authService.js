@@ -46,7 +46,6 @@ function postForGithubToken(code, cb) {
 		function(err, resp, data) {
 			if( err )
 				return cb(err)
-			//TODO: map stuff(repos, milestones, get access_token...)
 			cb(null, data)
 		}
 	)

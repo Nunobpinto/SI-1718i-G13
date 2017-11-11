@@ -32,11 +32,11 @@ router.get(
 	function(req, res, next) {
 		const code = req.query['code']
 		console.log('Authorization code is = ' + code)
-
 		authService.postForGithubToken(code, (err, data) => {
 			if( err )
 				return next(err)
-			//TODO: do github stuff
+			req.app.locals.github_token = data.access_token
+			res.redirect('/github/repos/private')
 		})
 	}
 )
