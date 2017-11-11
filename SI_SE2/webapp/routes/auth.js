@@ -14,7 +14,7 @@ router.get('/', function(req, res) {
 router.get('/github', function(req, res) {
 	res.statusCode = 302
 	let queryString = query.stringify({
-		scope: 'repo',
+		scope: 'repo user',
 		redirect_uri: global.Github_Redirect_URI,
 		state: req.csrfToken(),
 		client_id: global.Github_ClientID

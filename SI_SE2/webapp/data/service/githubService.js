@@ -30,20 +30,27 @@ function getPublicRepositories(keyword, cb) {
 
 function getPrivateRepositories(access_token,cb) {
 	const githubPrivateRepositoriesURI = 'https://api.github.com/user/repos?visibility=private'
+	const headers = {
+		headers: {
+			'User-Agent': 'SecurityWebApp',
+			'Authorization': 'token ' + access_token
+		}
+	}
 	request(githubPrivateRepositoriesURI,
-		{
-			headers: {
-				'User-Agent': 'SecurityWebApp',
-				'Authorization': 'token ' + access_token
-			}
-		},
+		headers,
 		function (err, resp, data) {
 			if(err){
 				return cb(err)
 			}
 			data = JSON.parse(data)
 			data = data.map(item=>mapper.mapToRepo(item))
-			cb(null, data)
+			request('https://api.github.com/user',headers,function (err, resp, body) {
+				if(err){
+					return cb(err)
+				}
+				body = JSON.parse(body)
+				cb(null, {user : body.login,data})
+			})
 		})
 }
 
@@ -58,7 +65,7 @@ function getMilestones(access_token,fullName, cb) {
 		},
 		function (err, resp, data) {
 			if(err || resp.statusCode !== 200){
-				return cb(err)
+				return cb({ message: 'Something broke!', statusCode: (resp ? resp.statusCode : 500) } )
 			}
 			data = JSON.parse(data)
 			data = data.map(item=>mapper.mapToMilestone(item))
