@@ -1,13 +1,22 @@
+'use strict'
+
 const express = require('express')
 const router = express.Router()
+const validator = require('../routes/validation')
 
-router.get('/', function(req, res) {
-	//TODO: to home if logged in, to login if not
-})
+router.get(
+	'/',
+	validator.checkGoogleAuth,
+	function(req, res) {
+		res.redirect('/home')
+	})
 
-router.get('/home', function(req, res) {
-	//TODO: check if logged in, go to login if false
-	res.render('home')
-})
+router.get(
+	'/home',
+	validator.checkGoogleAuth,
+	function(req, res) {
+		//TODO: do home stuff
+		res.render('home')
+	})
 
 module.exports = router

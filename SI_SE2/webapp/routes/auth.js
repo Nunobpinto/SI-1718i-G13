@@ -1,11 +1,13 @@
+const debug = require('debug')('webapp:auth')
 const express = require('express')
 const router = express.Router()
-const global = require('../data/global')
 const query = require('querystring')
-const request = require('request')
+const global = require('../data/global')
+const authService = require('../data/service/authService')
 
 router.get('/', function(req, res) {
-	//TODO: check if logged in, go home if true
+	if( res.locals.user )
+		res.redirect('/home')
 	res.render('login')
 })
 
@@ -27,32 +29,22 @@ router.get('/github', function(req, res) {
 router.get(
 	'/github/callback',
 	checkState,
-	function(req, res) {
+	function(req, res, next) {
 		const code = req.query['code']
 		console.log('Authorization code is = ' + code)
 
-		const params = {
-			code: code,
-			client_id: global.Github_ClientID,
-			client_secret: global.Github_ClientSecret,
-			redirect_uri: global.Github_Redirect_URI,
-			state: req.query['state']
-		}
-
-		request.post(
-			'https://github.com/login/oauth/access_token',
-			{json: true, form: params},
-			function(err, resp, data) {
-				//TODO: do stuff
-			}
-		)
+		authService.postForGithubToken(code, (err, data) => {
+			if( err )
+				return next(err)
+			//TODO: do github stuff
+		})
 	}
 )
 
 router.get('/google/', function(req, res) {
 	res.statusCode = 302
 	let queryString = query.stringify({
-		scope: 'openid email',
+		scope: 'openid https://www.googleapis.com/auth/calendar email profile',
 		redirect_uri: global.Google_Redirect_URI,
 		response_type: 'code',
 		state: req.csrfToken(),
@@ -71,25 +63,15 @@ router.get(
 	checkState,
 	function(req, res, next) {
 		const code = req.query['code']
+		debug('Authorization code is ' + code)
 
-		console.log('Authorization code is = ' + code)
-
-		const params = {
-			code: code,
-			client_id: global.Google_ClientID,
-			client_secret: global.Google_ClientSecret,
-			redirect_uri: global.Google_Redirect_URI,
-			grant_type: 'authorization_code'
-		}
-
-		request.post(
-			'https://www.googleapis.com/oauth2/v4/token',
-			{json: true, form: params},
-			function(err, resp, data) {
-				//TODO: create cookie, other authentication stuff
-				res.redirect('home')
-			}
-		)
+		authService.postForGoogleToken(code, (err, user) => {
+			if( err )
+				return next(err)
+			req.app.locals.user = user
+			res.cookie('google_id', user.access_token)
+			res.redirect('/home')
+		})
 	}
 )
 

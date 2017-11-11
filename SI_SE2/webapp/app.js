@@ -27,7 +27,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use(index)
 app.use('/login', authRoutes)
 
-// catch 404 and forward to error andler
+// catch 404 and forward to error handler
 app.use(function(req, res, next) {
 	let err = new Error('Not Found')
 	err.status = 404

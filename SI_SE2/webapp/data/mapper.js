@@ -10,8 +10,8 @@ module.exports = {
 	mapToMilestone
 }
 
-function mapToUser(user) {
-	return new User(user.name,user.picture,user.email)
+function mapToUser(user, access_token) {
+	return new User(user.name, user.picture, user.email, access_token)
 }
 
 function mapToRepo(repo) {
@@ -19,5 +19,5 @@ function mapToRepo(repo) {
 }
 
 function mapToMilestone(milestone) {
-	return new Milestone(milestone.title,milestone.description,milestone.created,milestone.closed)
+	return new Milestone(milestone.title, milestone.description, milestone.created, milestone.closed)
 }
