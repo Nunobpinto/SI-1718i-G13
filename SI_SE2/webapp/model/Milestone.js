@@ -14,5 +14,16 @@ function Milestone(title,description,created,closed,due) {
 }
 
 function getSimpleDate(date) {
+	if(date === null) return getCurrentDateTime()
 	return date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate()
+}
+
+function getCurrentDateTime() {
+	const date = new Date()
+	let year = date.getFullYear()
+	let month = date.getMonth() + 1
+	month = (month < 10 ? '0' : '') + month
+	let day  = date.getDate()
+	day = (day < 10 ? '0' : '') + day
+	return year + '-' + month + '-' + day
 }
