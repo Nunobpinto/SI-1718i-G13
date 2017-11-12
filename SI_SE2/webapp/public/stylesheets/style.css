@@ -65,11 +65,14 @@
 }
 
 #milestoneFormButton {
+    margin-top: 1rem;
     margin-left: 1.5rem;
 }
 
 label {
     display : block;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 label > input { /* HIDE RADIO */
     visibility: hidden; /* Makes input not-clickable */

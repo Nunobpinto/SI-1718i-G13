@@ -19,5 +19,6 @@ function mapToRepo(repo) {
 }
 
 function mapToMilestone(milestone) {
-	return new Milestone(milestone.title, milestone.description, milestone.created_at, milestone.closed_at, milestone.due_on)
+	//TODO: when dates are null, pass null to dto instead of default date
+	return new Milestone(milestone.title, milestone.description, new Date(milestone.created_at), new Date(milestone.closed_at), new Date(milestone.due_on))
 }

@@ -5,7 +5,7 @@
     <form method="get" action="/google/calendar">
         <fieldset id="milestoneTable">
             {{#each list}}
-                <label class="label">
+                <label id="label" class="list-group">
                     <input type="radio" name="milestone" value="{{this}}">
                     <div class="list-group-item flex-column align-items-start">
                         <div class="d-flex w-100 justify-content-between">
@@ -32,3 +32,4 @@
 {{else}}
     <h1 id="titleText" class="lead">There are no milestones in this repository!</h1>
 {{/if}}
+{{>footer}}
