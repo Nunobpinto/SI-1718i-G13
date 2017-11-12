@@ -9,6 +9,7 @@ const csrf = require('csurf')
 const index = require('./routes/index')
 const authRoutes = require('./routes/auth')
 const githubRoutes = require('./routes/github')
+const googleRoutes = require('./routes/google')
 
 const app = express()
 
@@ -27,7 +28,8 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 app.use(index)
 app.use('/login', authRoutes)
-app.use('/github',githubRoutes)
+app.use('/github', githubRoutes)
+app.use('/google', googleRoutes)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

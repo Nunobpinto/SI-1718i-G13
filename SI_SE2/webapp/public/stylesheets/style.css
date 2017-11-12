@@ -10,49 +10,74 @@
     max-width: 200px;
 }
 
-#divnavBar{
+#divnavBar {
     max-width:none;
     padding-left:0;
     padding-right:0;
     background-color: lightgray
 }
-#homeForm{
+
+#homeForm {
     padding-bottom: 5%;
     padding-top: 5%
 }
 
-#navItemColor{
+#navItemColor {
     color: black
 }
 
-#loginJtronColor{
+#loginJtronColor {
     background-color: lightgray
 }
 
-#homeInputBtn{
+#homeInputBtn {
     padding-left:27rem
 }
 
-#homePublicBtn{
+#homePublicBtn {
     padding-left:33rem
 }
 
-#userImg{
+#userImg {
     border-radius: 50%;
     width: 40px;
 }
 
-#marginSignOutBtn{
+#marginSignOutBtn {
     margin-left: 50rem
 }
 
-#repoTable{
-    margin-top: 2rem;
+#repoTable {
     margin-left: 1.5rem;
-    width: auto;
+    max-width: 400px;
 }
 
-#repoTitle{
+#titleText {
+    font-size: 30px;
     margin-top: 1rem;
+    margin-bottom: 1rem;
     margin-left:1.5rem;
+}
+
+#milestoneTable {
+    margin-left: 1.5rem;
+    max-width: 800px;
+}
+
+#milestoneFormButton {
+    margin-left: 1.5rem;
+}
+
+label {
+    display : block;
+}
+label > input { /* HIDE RADIO */
+    visibility: hidden; /* Makes input not-clickable */
+    position: absolute; /* Remove input from document flow */
+}
+label > input + div { /* DIV STYLES */
+    cursor:pointer;
+}
+label > input:checked + div{ /* (RADIO CHECKED) DIV STYLES */
+    background-color: #b9bbbe;
 }

@@ -1,15 +1,12 @@
 {{> base}}
 {{>navbar}}
-<h1 id="repoTitle" class="lead">{{message}}</h1>
-<table id="repoTable" class="table table-bordered ">
-    <tr>
-        <th class="lead">Repositories</th>
-    </tr>
-    {{#each list}}
-        <tr>
-            <td>
-                <a href='/github/repos/{{fullName}}/milestones'>{{fullName}}</a>
-            </td>
-        </tr>
-    {{/each}}
-</table>
+{{#if list}}
+    <h1 id="titleText" class="lead">{{message}}</h1>
+    <div id="repoTable" class="list-group">
+        {{#each list}}
+            <a href="/github/repos/{{fullName}}/milestones" class="list-group-item list-group-item-action">{{fullName}}</a>
+        {{/each}}
+    </div>
+{{else}}
+    <h1 id="titleText" class="lead">No results found!</h1>
+{{/if}}
