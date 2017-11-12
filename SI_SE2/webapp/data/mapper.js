@@ -19,8 +19,8 @@ function mapToRepo(repo) {
 }
 
 function mapToMilestone(milestone) {
-	if(milestone.created_at === null || milestone.closed_at === null || milestone.due_on === null ){
-		return new Milestone(milestone.title, milestone.description, null, null, null)
+	if(milestone.due_on === null ){
+		return new Milestone(milestone.title, milestone.description,  new Date(milestone.created_at), new Date(milestone.closed_at), null)
 	}
 	return new Milestone(milestone.title, milestone.description, new Date(milestone.created_at), new Date(milestone.closed_at), new Date(milestone.due_on))
 }
