@@ -10,6 +10,7 @@ const index = require('./routes/index')
 const authRoutes = require('./routes/auth')
 const githubRoutes = require('./routes/github')
 const googleRoutes = require('./routes/google')
+const logoutRoute = require('./routes/logout')
 
 const app = express()
 
@@ -30,6 +31,7 @@ app.use(index)
 app.use('/login', authRoutes)
 app.use('/github', githubRoutes)
 app.use('/google', googleRoutes)
+app.use('/logout',logoutRoute)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
