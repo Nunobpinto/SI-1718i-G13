@@ -15,7 +15,7 @@ function Milestone(title,description,created,closed,due) {
 
 function getSimpleDate(date) {
 	if(date === null) return getCurrentDateTime()
-	return date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate()
+	return date.getFullYear() + '-' + date.getMonth() + 1 + '-' + date.getDate()
 }
 
 function getCurrentDateTime() {
