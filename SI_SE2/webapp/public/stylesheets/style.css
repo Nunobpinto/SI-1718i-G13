@@ -10,6 +10,12 @@
     max-width: 200px;
 }
 
+#homeRef{
+    font-size: 30px;
+    margin-right: 1.5rem;
+    color: black
+}
+
 #divnavBar {
     max-width:none;
     padding-left:0;

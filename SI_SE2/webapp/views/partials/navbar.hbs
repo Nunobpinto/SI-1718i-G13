@@ -1,13 +1,18 @@
 <div id="divnavBar" class="container">
     <nav class="navbar navbar-expand-lg">
         <div>
+            <a href="/home"> <i id = "homeRef" class="fa fa-home fa-6"></i></a>
+        </div>
+        <div>
             <img id="userImg" src={{user.picture}}>
         </div>
         <div class="col">
             <span id="navItemColor">Welcome, {{user.name}}!</span>
         </div>
         <div class="col">
-            <button id="marginSignOutBtn" type="button" class="btn btn-outline-dark">Sign Out</button>
+            <a href="/logout">
+                <button id="marginSignOutBtn" type="button" class="btn btn-outline-dark">Sign Out</button>
+            </a>
         </div>
     </nav>
 </div>
