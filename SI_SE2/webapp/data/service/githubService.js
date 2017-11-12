@@ -2,7 +2,6 @@
 
 const request = require('request')
 const mapper = require('../mapper')
-const global = require('../global')
 
 module.exports = {
 	getPublicRepositories,
@@ -18,18 +17,19 @@ function getPublicRepositories(keyword, cb) {
 				'User-Agent': 'SecurityWebApp'
 			}
 		},
-		function (err, resp, data) {
-			if(err){
+		function(err, resp, data) {
+			if( err )
 				return cb(err)
-			}
-			data = JSON.parse(data)
-			data = data.items.map(item=>mapper.mapToRepo(item))
-			cb(null, data)
-		})
+			const jsonRepos = JSON.parse(data)
+			const repos = jsonRepos.items.map(item => mapper.mapToRepo(item))
+			cb(null, repos)
+		}
+	)
 }
 
-function getPrivateRepositories(access_token,cb) {
+function getPrivateRepositories(access_token, cb) {
 	const githubPrivateRepositoriesURI = 'https://api.github.com/user/repos?visibility=private'
+	const githubUserInfoURI = 'https://api.github.com/user'
 	const headers = {
 		headers: {
 			'User-Agent': 'SecurityWebApp',
@@ -38,23 +38,25 @@ function getPrivateRepositories(access_token,cb) {
 	}
 	request(githubPrivateRepositoriesURI,
 		headers,
-		function (err, resp, data) {
-			if(err){
+		function(err, resp, data) {
+			if( err )
 				return cb(err)
-			}
-			data = JSON.parse(data)
-			data = data.map(item=>mapper.mapToRepo(item))
-			request('https://api.github.com/user',headers,function (err, resp, body) {
-				if(err){
-					return cb(err)
+			const jsonRepos = JSON.parse(data)
+			const repos = jsonRepos.map(item => mapper.mapToRepo(item))
+			request(githubUserInfoURI,
+				headers,
+				function(err, resp, data) {
+					if( err )
+						return cb(err)
+					const jsonUser = JSON.parse(data)
+					cb(null, {user: jsonUser.login, repos: repos})
 				}
-				body = JSON.parse(body)
-				cb(null, {user : body.login, repos: data})
-			})
-		})
+			)
+		}
+	)
 }
 
-function getMilestones(access_token,fullName, cb) {
+function getMilestones(access_token, fullName, cb) {
 	const githubMilestonesURI = `https://api.github.com/repos/${fullName}/milestones?state=all`
 	request(githubMilestonesURI,
 		{
@@ -63,12 +65,11 @@ function getMilestones(access_token,fullName, cb) {
 				'Authorization': 'token ' + access_token
 			}
 		},
-		function (err, resp, data) {
-			if(err || resp.statusCode !== 200){
-				return cb({ message: 'Something broke!', statusCode: (resp ? resp.statusCode : 500) } )
-			}
-			data = JSON.parse(data)
-			data = data.map(item=>mapper.mapToMilestone(item))
-			cb(null, data)
+		function(err, resp, data) {
+			if( err )
+				return cb(err)
+			const jsonMilestones = JSON.parse(data)
+			const milestones = jsonMilestones.map(item => mapper.mapToMilestone(item))
+			cb(null, milestones)
 		})
 }

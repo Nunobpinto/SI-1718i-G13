@@ -12,8 +12,8 @@ router.get(
 	'/home',
 	validator.checkGoogleAuth,
 	function(req, res) {
-		//TODO: do home stuff
 		res.render('home')
-	})
+	}
+)
 
 module.exports = router
