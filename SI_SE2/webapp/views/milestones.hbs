@@ -1,11 +1,11 @@
-
 {{>navbar}}
 {{#if list}}
     <h1 id="titleText" class="lead">{{message}}</h1>
-    <form method="get" action="/google/calendar">
+    <form method="post" action="/google/calendar">
         <fieldset id="milestoneTable">
             {{#each list}}
                 <label id="label" class="list-group">
+                    <input type="hidden" name="_csrf" value={{../csrfToken}}>
                     <input type="radio" name="milestone" value="{{this}}">
                     <div class="list-group-item flex-column align-items-start">
                         <div class="d-flex w-100 justify-content-between">

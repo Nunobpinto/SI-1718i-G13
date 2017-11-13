@@ -7,11 +7,11 @@ const validator = require('../routes/validation')
 
 module.exports = router
 
-router.get(
+router.post(
 	'/calendar',
 	validator.checkGoogleAuth,
 	function(req, res, next) {
-		const milestone = req.query.milestone.split('\n')
+		const milestone = req.body.milestone.split('\n')
 		googleService.postCalendarAllDayEvent(
 			req.app.locals.user.access_token,
 			{

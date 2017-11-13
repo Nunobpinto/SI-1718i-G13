@@ -72,10 +72,12 @@ router.get(
 
 function checkState(req, res, next) {
 	if( req.query.state !== req.cookies.state ) {
+		delete req.cookies.state
 		let err = new Error('state mismatch!')
 		err.statusCode = 401
 		return next(err)
 	}
+	delete req.cookies.state
 	next()
 }
 

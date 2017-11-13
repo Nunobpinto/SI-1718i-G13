@@ -57,6 +57,7 @@ router.get(
 				if( err )
 					return next(err)
 				res.render('milestones', {
+					csrfToken: req.csrfToken(),
 					message: `Milestones for ${repo}`,
 					list: data
 				})

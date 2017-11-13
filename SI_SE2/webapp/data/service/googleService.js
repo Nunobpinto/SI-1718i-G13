@@ -1,7 +1,6 @@
 'use strict'
 
 const request = require('request')
-const mapper = require('../mapper')
 
 module.exports = {
 	postCalendarAllDayEvent
