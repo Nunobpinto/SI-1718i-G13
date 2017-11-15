@@ -1,18 +1,19 @@
 package serverApp;
 
-import javax.net.ssl.SSLServerSocketFactory;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import javax.net.ssl.*;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
 
 public class ServerApp {
 
     public static void main(String[] args) {
         int portNumber = Integer.parseInt(args[0]);
-        SSLServerSocketFactory ssf = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
+        SSLServerSocketFactory ssf = ssf = loadSSLContext(args[1]).getServerSocketFactory();
         try (
                 ServerSocket serverSocket = ssf.createServerSocket(portNumber);
                 Socket clientSocket = serverSocket.accept();
@@ -28,5 +29,29 @@ public class ServerApp {
                     + portNumber + " or listening for a connection");
             System.out.println(e.getMessage());
         }
+    }
+
+    private static SSLContext loadSSLContext(String keystoreFileName) throws Exception {
+        KeyStore ks = KeyStore.getInstance("JKS");
+        ks.load(new FileInputStream(keystoreFileName), "changeit".toCharArray());
+
+        setTrustedCert(ks);
+
+        KeyManagerFactory kmf = KeyManagerFactory.getInstance("X509");
+        kmf.init(ks, "changeit".toCharArray());
+
+        TrustManagerFactory tmf = TrustManagerFactory.getInstance("X509");
+        tmf.init(ks);
+
+        SSLContext sc = SSLContext.getInstance("TLS");
+        TrustManager[] trustManagers = tmf.getTrustManagers();
+        sc.init(kmf.getKeyManagers(), trustManagers, null);
+        return sc;
+    }
+
+    private static void setTrustedCert(KeyStore keystore) throws CertificateException, KeyStoreException, FileNotFoundException {
+        CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
+        KeyStore.Entry newEntry = new KeyStore.TrustedCertificateEntry(certFactory.generateCertificate(new FileInputStream("res\\CA1.cer")));
+        keystore.setEntry("CA1", newEntry, null);
     }
 }
