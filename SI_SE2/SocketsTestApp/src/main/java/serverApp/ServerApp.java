@@ -2,56 +2,69 @@ package serverApp;
 
 import javax.net.ssl.*;
 import java.io.*;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
+import java.security.SecureRandom;
 
 public class ServerApp {
+    private static final int HTTP_PORT = 5050;
 
-    public static void main(String[] args) {
-        int portNumber = Integer.parseInt(args[0]);
-        SSLServerSocketFactory ssf = ssf = loadSSLContext(args[1]).getServerSocketFactory();
-        try (
-                ServerSocket serverSocket = ssf.createServerSocket(portNumber);
-                Socket clientSocket = serverSocket.accept();
-                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))
-        ) {
-            String inputLine;
-            while ((inputLine = in.readLine()) != null) {
-                out.println(inputLine);
+    public static void main(String[] args) throws Exception {
+        ServerApp server = new ServerApp();
+        server.startServer();
+    }
+
+    public void startServer() throws Exception {
+        SSLServerSocketFactory ssf = loadSSLContext().getServerSocketFactory();
+        try (SSLServerSocket sslServerSocket = (SSLServerSocket) ssf.createServerSocket(HTTP_PORT)) {
+            sslServerSocket.setNeedClientAuth(true);
+            while(true) {
+                Socket clientSocket = sslServerSocket.accept();
+                processRequest(clientSocket);
             }
-        } catch (IOException e) {
-            System.out.println("Exception caught when trying to listen on port "
-                    + portNumber + " or listening for a connection");
-            System.out.println(e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Exception caught when trying to listen on port " + HTTP_PORT + " or listening for a connection");
+            e.printStackTrace();
         }
     }
 
-    private static SSLContext loadSSLContext(String keystoreFileName) throws Exception {
-        KeyStore ks = KeyStore.getInstance("JKS");
-        ks.load(new FileInputStream(keystoreFileName), "changeit".toCharArray());
-
-        setTrustedCert(ks);
-
-        KeyManagerFactory kmf = KeyManagerFactory.getInstance("X509");
-        kmf.init(ks, "changeit".toCharArray());
-
-        TrustManagerFactory tmf = TrustManagerFactory.getInstance("X509");
-        tmf.init(ks);
-
-        SSLContext sc = SSLContext.getInstance("TLS");
-        TrustManager[] trustManagers = tmf.getTrustManagers();
-        sc.init(kmf.getKeyManagers(), trustManagers, null);
-        return sc;
+    private void processRequest(Socket clientSocket) throws IOException {
+        try(
+                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                DataOutputStream out = new DataOutputStream(clientSocket.getOutputStream())
+        ) {
+            /*
+            StringBuilder requestBuilder = new StringBuilder();
+            String line;
+            while( (line = in.readLine()) != null ) {
+                requestBuilder.append(line);
+            }
+            String request = requestBuilder.toString();
+            */
+            String request = in.readLine();
+            System.out.println("Received from Client: " + request);
+            out.writeBytes("HTTP/1.1 200 OK\r\n");
+            out.writeBytes("Content-Type: text/plain\r\n");
+            out.writeBytes("Content-Length: " + request.getBytes().length + "\r\n");
+            out.writeBytes("\r\n");
+            out.writeBytes(request + "\r\n");
+            out.flush();
+        }
     }
 
-    private static void setTrustedCert(KeyStore keystore) throws CertificateException, KeyStoreException, FileNotFoundException {
-        CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
-        KeyStore.Entry newEntry = new KeyStore.TrustedCertificateEntry(certFactory.generateCertificate(new FileInputStream("res\\CA1.cer")));
-        keystore.setEntry("CA1", newEntry, null);
+    private static SSLContext loadSSLContext() throws Exception {
+        KeyStore keyStore = KeyStore.getInstance("PKCS12");
+        keyStore.load(new FileInputStream("res\\localhost.pfx"), "changeit".toCharArray());
+        KeyManagerFactory kmf = KeyManagerFactory.getInstance("PKIX");
+        kmf.init(keyStore, "changeit".toCharArray());
+/*
+        KeyStore trustStore = KeyStore.getInstance("JKS");
+        trustStore.load(new FileInputStream("res\\CA1.jks"), "changeit".toCharArray());
+        TrustManagerFactory tmf = TrustManagerFactory.getInstance("PKIX");
+        tmf.init(trustStore);
+*/
+        SSLContext sc = SSLContext.getInstance("TLS");
+        sc.init(kmf.getKeyManagers(), null, new SecureRandom());
+        return sc;
     }
 }

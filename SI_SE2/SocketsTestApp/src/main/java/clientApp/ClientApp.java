@@ -1,25 +1,24 @@
 package clientApp;
 
-import javax.net.ssl.SSLSocketFactory;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
+import javax.net.ssl.*;
+import java.io.*;
 import java.net.UnknownHostException;
+import java.security.KeyStore;
+import java.security.SecureRandom;
 
 public class ClientApp {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         String hostName = args[0];
         int portNumber = Integer.parseInt(args[1]);
-        SSLSocketFactory sf = (SSLSocketFactory) SSLSocketFactory.getDefault();
+        SSLSocketFactory sf = loadSSLContext(args[2]).getSocketFactory();
         try (
-                Socket echoSocket = sf.createSocket(hostName,portNumber);
+                SSLSocket echoSocket = (SSLSocket) sf.createSocket(hostName, portNumber);
                 PrintWriter out = new PrintWriter(echoSocket.getOutputStream(), true);
                 BufferedReader in = new BufferedReader( new InputStreamReader(echoSocket.getInputStream()));
                 BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in))
         ) {
+            echoSocket.startHandshake();
             String userInput;
             while ((userInput = stdIn.readLine()) != null) {
                 out.println(userInput);
@@ -33,5 +32,21 @@ public class ClientApp {
                     hostName);
             System.exit(1);
         }
+    }
+
+    private static SSLContext loadSSLContext(String clientKeyStore) throws Exception {
+        KeyStore trustStore = KeyStore.getInstance("JKS");
+        trustStore.load(new FileInputStream("res\\CA1.jks"), "changeit".toCharArray());
+        TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
+        tmf.init(trustStore);
+
+        KeyStore keyStore = KeyStore.getInstance("PKCS12");
+        keyStore.load(new FileInputStream(clientKeyStore), "changeit".toCharArray());
+        KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+        kmf.init(keyStore, "changeit".toCharArray());
+
+        SSLContext sc = SSLContext.getInstance("TLS");
+        sc.init(kmf.getKeyManagers(), tmf.getTrustManagers(), new SecureRandom());
+        return sc;
     }
 }
