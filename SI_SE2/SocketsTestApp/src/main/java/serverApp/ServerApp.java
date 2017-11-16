@@ -1,10 +1,14 @@
 package serverApp;
 
-import javax.net.ssl.*;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLServerSocketFactory;
 import java.io.*;
 import java.net.Socket;
 import java.security.KeyStore;
 import java.security.SecureRandom;
+import java.util.Arrays;
 
 public class ServerApp {
     private static final int HTTP_PORT = 5050;
@@ -17,7 +21,7 @@ public class ServerApp {
     public void startServer() throws Exception {
         SSLServerSocketFactory ssf = loadSSLContext().getServerSocketFactory();
         try (SSLServerSocket sslServerSocket = (SSLServerSocket) ssf.createServerSocket(HTTP_PORT)) {
-            sslServerSocket.setNeedClientAuth(true);
+            sslServerSocket.setNeedClientAuth(false);
             while(true) {
                 Socket clientSocket = sslServerSocket.accept();
                 processRequest(clientSocket);
@@ -33,15 +37,10 @@ public class ServerApp {
                 BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 DataOutputStream out = new DataOutputStream(clientSocket.getOutputStream())
         ) {
-            /*
-            StringBuilder requestBuilder = new StringBuilder();
-            String line;
-            while( (line = in.readLine()) != null ) {
-                requestBuilder.append(line);
-            }
-            String request = requestBuilder.toString();
-            */
-            String request = in.readLine();
+            char []buf = new char[1024];
+            int size =  in.read(buf);
+            char [] newBuffer = Arrays.copyOf(buf,size);
+            String request = new String(newBuffer);
             System.out.println("Received from Client: " + request);
             out.writeBytes("HTTP/1.1 200 OK\r\n");
             out.writeBytes("Content-Type: text/plain\r\n");
@@ -57,12 +56,12 @@ public class ServerApp {
         keyStore.load(new FileInputStream("res\\localhost.pfx"), "changeit".toCharArray());
         KeyManagerFactory kmf = KeyManagerFactory.getInstance("PKIX");
         kmf.init(keyStore, "changeit".toCharArray());
-/*
-        KeyStore trustStore = KeyStore.getInstance("JKS");
+
+        /*KeyStore trustStore = KeyStore.getInstance("JKS");
         trustStore.load(new FileInputStream("res\\CA1.jks"), "changeit".toCharArray());
         TrustManagerFactory tmf = TrustManagerFactory.getInstance("PKIX");
-        tmf.init(trustStore);
-*/
+        tmf.init(trustStore);*/
+
         SSLContext sc = SSLContext.getInstance("TLS");
         sc.init(kmf.getKeyManagers(), null, new SecureRandom());
         return sc;
