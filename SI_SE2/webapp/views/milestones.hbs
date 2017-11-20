@@ -5,8 +5,8 @@
         <fieldset id="milestoneTable">
             {{#each list}}
                 <label id="label" class="list-group">
-                    <input type="hidden" name="_csrf" value={{../csrfToken}}>
-                    <input type="radio" name="milestone" value="{{this}}">
+                    <input type="hidden" name="_csrf" value="{{../csrfToken}}">
+                    <input type="radio" name="milestone" value="{{this}}" required>
                     <div class="list-group-item flex-column align-items-start">
                         <div class="d-flex w-100 justify-content-between">
                             <h4 class="mb-1">{{title}}</h4>

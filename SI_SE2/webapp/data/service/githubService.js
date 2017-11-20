@@ -57,14 +57,12 @@ function getPrivateRepositories(access_token, cb) {
 }
 
 function getMilestones(access_token, fullName, cb) {
+	let headers = {'User-Agent': 'SecurityWebApp'}
+	if(access_token)
+		headers['Authorization'] = 'token ' + access_token
 	const githubMilestonesURI = `https://api.github.com/repos/${fullName}/milestones?state=all`
 	request(githubMilestonesURI,
-		{
-			headers: {
-				'User-Agent': 'SecurityWebApp',
-				'Authorization': 'token ' + access_token
-			}
-		},
+		{headers},
 		function(err, resp, data) {
 			if( err )
 				return cb(err)
