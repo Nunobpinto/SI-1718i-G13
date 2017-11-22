@@ -1,13 +1,10 @@
 'use strict'
 
 const container = new Map()
-const crypto = require('crypto')
-const key = 'crypt'
-const cipher = crypto.createCipher('aes-256-cbc', key)
+const shortid = require('shortid')
 
 function addToken(id) {
-	cipher.update(id, 'utf8', 'base64')
-	let value = cipher.final('base64')
+	let value = shortid.generate()
 	container.set(value,id)
 	return value
 }
