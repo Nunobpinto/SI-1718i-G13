@@ -12,26 +12,37 @@ public class ClientApp {
         String hostName = args[0];
         int portNumber = Integer.parseInt(args[1]);
         SSLSocketFactory sf = loadSSLContext(args[2]).getSocketFactory();
-        try (
+        while (true){
+            try {
                 SSLSocket echoSocket = (SSLSocket) sf.createSocket(hostName, portNumber);
                 PrintWriter out = new PrintWriter(echoSocket.getOutputStream(), true);
-                BufferedReader in = new BufferedReader( new InputStreamReader(echoSocket.getInputStream()));
-                BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in))
-        ) {
-            echoSocket.startHandshake();
-            String userInput;
-            while ((userInput = stdIn.readLine()) != null) {
+                BufferedReader in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
+                BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+                //echoSocket.startHandshake();
+                System.out.println("Hello user !! Write Something....");
+                String userInput = stdIn.readLine();
                 out.println(userInput);
-                System.out.println("echo: " + in.readLine());
+                String res = readAllStrings(in) ;
+                echoSocket.close();
+                System.out.println(res);
+            } catch (UnknownHostException e) {
+                System.err.println("Don't know about host " + hostName);
+                System.exit(1);
+            } catch (IOException e) {
+                System.err.println("Couldn't get I/O for the connection to " +
+                        hostName);
+                System.exit(1);
             }
-        } catch (UnknownHostException e) {
-            System.err.println("Don't know about host " + hostName);
-            System.exit(1);
-        } catch (IOException e) {
-            System.err.println("Couldn't get I/O for the connection to " +
-                    hostName);
-            System.exit(1);
         }
+
+    }
+
+    private static String readAllStrings(BufferedReader in) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = in.readLine()) != null)
+            sb.append(line).append("\n");
+        return sb.toString();
     }
 
     private static SSLContext loadSSLContext(String clientKeyStore) throws Exception {
