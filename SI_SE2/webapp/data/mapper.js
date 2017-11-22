@@ -10,8 +10,8 @@ module.exports = {
 	mapToMilestone
 }
 
-function mapToUser(user, access_token) {
-	return new User(user.name, user.picture, user.email, access_token)
+function mapToUser(user) {
+	return new User(user.name, user.picture, user.email)
 }
 
 function mapToRepo(repo) {

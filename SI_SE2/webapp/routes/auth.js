@@ -6,6 +6,7 @@ const router = express.Router()
 const query = require('querystring')
 const global = require('../data/global')
 const authService = require('../data/service/authService')
+const idContainer = require('../tokenContainer/idContainer')
 
 router.get('/', function(req, res) {
 	if( res.app.locals.user )
@@ -60,11 +61,11 @@ router.get(
 	function(req, res, next) {
 		const code = req.query['code']
 		debug('Authorization code is ' + code)
-		authService.postForGoogleToken(code, (err, user) => {
+		authService.postForGoogleToken(code, (err, user,token) => {
 			if( err )
 				return next(err)
 			req.app.locals.user = user
-			res.cookie('google_id', user.access_token)
+			res.cookie('google_id', idContainer.addToken(token))
 			res.redirect('/home')
 		})
 	}

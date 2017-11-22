@@ -17,7 +17,7 @@ router.post(
 			milestone[4] = `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate()}`
 		}
 		googleService.postCalendarAllDayEvent(
-			req.app.locals.user.access_token,
+			res.locals.access_token,
 			{
 				summary: milestone[0],
 				description: milestone[1],

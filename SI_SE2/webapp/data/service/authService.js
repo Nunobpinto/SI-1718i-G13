@@ -26,7 +26,7 @@ function postForGoogleToken(code, cb) {
 			if( err )
 				return cb(err)
 			let id_tokenDecoded = JSON.parse(Buffer.from(data.id_token.split('.')[1], 'base64').toString())
-			cb(null, mapper.mapToUser(id_tokenDecoded, data.access_token))
+			cb(null, mapper.mapToUser(id_tokenDecoded), data.access_token)
 		}
 	)
 }
