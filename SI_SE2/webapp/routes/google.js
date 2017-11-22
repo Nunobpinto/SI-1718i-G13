@@ -12,6 +12,10 @@ router.post(
 	validator.checkGoogleAuth,
 	function(req, res, next) {
 		const milestone = req.body.milestone.split('\n')
+		if( milestone[4].includes('null') ) {
+			const currDate = new Date()
+			milestone[4] = `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate()}`
+		}
 		googleService.postCalendarAllDayEvent(
 			req.app.locals.user.access_token,
 			{
@@ -27,7 +31,6 @@ router.post(
 			function(err, data) {
 				if( err )
 					next(err)
-				//TODO: faz-se mais o que???
 				res.redirect(data.htmlLink)
 			}
 		)

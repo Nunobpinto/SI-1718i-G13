@@ -4,24 +4,15 @@ module.exports = Milestone
 
 function Milestone(title,description,created,closed,due) {
 	this.title = title
-	this.description = description
-	this.created = created
-	this.closed = closed
-	this.due = due
+	this.description = description === '' ? 'No description' : description
+	this.created = getSimpleDate(created)
+	this.closed = getSimpleDate(closed)
+	this.due = getSimpleDate(due)
 	this.toString = function() {
-		return `${title}\n${description}\n${getSimpleDate(created)}\n${getSimpleDate(closed)}\n${getSimpleDate(due)}`
+		return `${this.title}\n${this.description}\n${this.created}\n${this.closed}\n${this.due}`
 	}
 }
 
 function getSimpleDate(date) {
-	if(date === null) return getCurrentDateTime()
-	return date.getFullYear() + '-' + date.getMonth() + 1 + '-' + date.getDate()
-}
-
-function getCurrentDateTime() {
-	const date = new Date()
-	let year = date.getFullYear()
-	let month = date.getMonth() + 1
-	let day  = date.getDate()
-	return year + '-' + month + '-' + day
+	return date === null ? null : date.split('T', 1).pop()
 }
