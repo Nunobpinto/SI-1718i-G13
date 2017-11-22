@@ -18,7 +18,6 @@ public class ClientApp {
                 PrintWriter out = new PrintWriter(echoSocket.getOutputStream(), true);
                 BufferedReader in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
                 BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-                //echoSocket.startHandshake();
                 System.out.println("Hello user !! Write Something....");
                 String userInput = stdIn.readLine();
                 out.println(userInput);
