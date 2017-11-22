@@ -12,11 +12,7 @@ module.exports = {
 function getPublicRepositories(keyword, cb) {
 	const githubPublicRepositoriesURI = `https://api.github.com/search/repositories?q=${keyword}`
 	request(githubPublicRepositoriesURI,
-		{
-			headers: {
-				'User-Agent': 'SecurityWebApp'
-			}
-		},
+		{ headers: { 'User-Agent': 'SecurityWebApp' } },
 		function(err, resp, data) {
 			if( err )
 				return cb(err)
@@ -33,7 +29,7 @@ function getPrivateRepositories(access_token, cb) {
 	const headers = {
 		headers: {
 			'User-Agent': 'SecurityWebApp',
-			'Authorization': 'token ' + access_token
+			'Authorization': `token ${access_token}`
 		}
 	}
 	request(githubPrivateRepositoriesURI,
@@ -59,7 +55,7 @@ function getPrivateRepositories(access_token, cb) {
 function getMilestones(access_token, fullName, cb) {
 	let headers = {'User-Agent': 'SecurityWebApp'}
 	if(access_token)
-		headers['Authorization'] = 'token ' + access_token
+		headers['Authorization'] = `token ${access_token}`
 	const githubMilestonesURI = `https://api.github.com/repos/${fullName}/milestones?state=all`
 	request(githubMilestonesURI,
 		{headers},
@@ -67,7 +63,7 @@ function getMilestones(access_token, fullName, cb) {
 			if( err )
 				return cb(err)
 			const jsonMilestones = JSON.parse(data)
-			const milestones = jsonMilestones.map(item => mapper.mapToMilestone(item))
+			const milestones = jsonMilestones.map(item => mapper.mapToMilestone(item)).filter( milestone => milestone.closed === null )
 			cb(null, milestones)
 		})
 }

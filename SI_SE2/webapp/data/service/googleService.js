@@ -14,7 +14,7 @@ function postCalendarAllDayEvent(access_token, body, cb) {
 		json: true,
 		headers: {
 			'User-Agent': 'SecurityWebApp',
-			'Authorization': 'Bearer ' + access_token,
+			'Authorization': `Bearer ${access_token}`
 		}
 	}
 	request.post(options, function(err, resp, data) {

@@ -52,7 +52,7 @@ router.get(
 		const repo = req.params.repo
 		githubService.getMilestones(
 			req.app.locals.github_token,
-			owner + '/' + repo,
+			`${owner}/${repo}`,
 			(err, data) => {
 				if( err )
 					return next(err)
