@@ -6,7 +6,7 @@ const router = express.Router()
 const query = require('querystring')
 const global = require('../data/global')
 const authService = require('../data/service/authService')
-const idContainer = require('../tokenContainer/idContainer')
+const idContainer = require('../data/idContainer')
 
 router.get('/', function(req, res) {
 	if( res.app.locals.user )

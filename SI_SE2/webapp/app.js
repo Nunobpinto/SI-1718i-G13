@@ -11,7 +11,6 @@ const authRoutes = require('./routes/auth')
 const githubRoutes = require('./routes/github')
 const googleRoutes = require('./routes/google')
 const logoutRoute = require('./routes/logout')
-const containerMW = require('./tokenContainer/containerMW')
 
 const app = express()
 
@@ -29,7 +28,6 @@ app.use(csrf({cookie: true}))
 app.use(express.static(path.join(__dirname, 'public')))
 
 app.use(index)
-app.use(containerMW)
 app.use('/login', authRoutes)
 app.use('/github', githubRoutes)
 app.use('/google', googleRoutes)
