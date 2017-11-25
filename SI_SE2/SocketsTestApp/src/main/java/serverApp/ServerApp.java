@@ -10,11 +10,8 @@ import java.util.Arrays;
 public class ServerApp {
     private static final int HTTP_PORT = 5050;
     private static final String PASSWORD = "changeit";
-
-    public static void main(String[] args) throws Exception {
-        ServerApp server = new ServerApp();
-        server.startServer();
-    }
+    private static final String KEYSTORE_PATH = "res\\localhost.pfx";
+    private static final String TRUSTSTORE_PATH = "res\\CA1.jks";
 
     public void startServer() throws Exception {
         SSLServerSocketFactory ssf = loadSSLContext().getServerSocketFactory();
@@ -53,17 +50,22 @@ public class ServerApp {
 
     private static SSLContext loadSSLContext() throws Exception {
         KeyStore keyStore = KeyStore.getInstance("PKCS12");
-        keyStore.load(new FileInputStream("res\\localhost.pfx"), PASSWORD.toCharArray());
+        keyStore.load(new FileInputStream(KEYSTORE_PATH), PASSWORD.toCharArray());
         KeyManagerFactory kmf = KeyManagerFactory.getInstance("PKIX");
         kmf.init(keyStore, PASSWORD.toCharArray());
 
         KeyStore trustStore = KeyStore.getInstance("JKS");
-        trustStore.load(new FileInputStream("res\\CA1.jks"), PASSWORD.toCharArray());
+        trustStore.load(new FileInputStream(TRUSTSTORE_PATH), PASSWORD.toCharArray());
         TrustManagerFactory tmf = TrustManagerFactory.getInstance("PKIX");
         tmf.init(trustStore);
 
         SSLContext sc = SSLContext.getInstance("TLS");
         sc.init(kmf.getKeyManagers(), tmf.getTrustManagers(), new SecureRandom());
         return sc;
+    }
+
+    public static void main(String[] args) throws Exception {
+        ServerApp server = new ServerApp();
+        server.startServer();
     }
 }
