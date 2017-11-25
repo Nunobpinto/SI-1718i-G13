@@ -2,15 +2,15 @@
 
 const express = require('express')
 const router = express.Router()
+const debug = require('debug')('webapp:githubRoute')
 const githubService = require('../data/service/githubService')
 const validator = require('../routes/validation')
-
-module.exports = router
 
 router.get(
 	'/repos/private',
 	validator.checkGoogleAuth,
 	function(req, res, next) {
+		debug('Fetching private repositories')
 		githubService.getPrivateRepositories(
 			req.app.locals.github_token,
 			(err, data) => {
@@ -30,6 +30,7 @@ router.get(
 	validator.checkGoogleAuth,
 	function(req, res, next) {
 		const keyword = req.query['keyword']
+		debug('Fetching public repositories by ' + keyword)
 		githubService.getPublicRepositories(
 			keyword,
 			(err, data) => {
@@ -50,6 +51,7 @@ router.get(
 	function(req, res, next) {
 		const owner = req.params.owner
 		const repo = req.params.repo
+		debug(`Fetching milestones from ${owner}/${repo}`)
 		githubService.getMilestones(
 			req.app.locals.github_token,
 			`${owner}/${repo}`,
@@ -65,3 +67,5 @@ router.get(
 		)
 	}
 )
+
+module.exports = router

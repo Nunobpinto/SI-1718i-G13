@@ -2,16 +2,16 @@
 
 const express = require('express')
 const router = express.Router()
+const debug = require('debug')('webapp:googleRoutes')
 const googleService = require('../data/service/googleService')
 const validator = require('../routes/validation')
-
-module.exports = router
 
 router.post(
 	'/calendar',
 	validator.checkGoogleAuth,
 	function(req, res, next) {
 		const milestone = req.body.milestone.split('\n')
+		debug('Posting all day event to google calendar')
 		if( milestone[4].includes('null') ) {
 			const currDate = new Date()
 			milestone[4] = `${currDate.getFullYear()}-${currDate.getMonth() + 1}-${currDate.getDate()}`
@@ -36,3 +36,5 @@ router.post(
 		)
 	}
 )
+
+module.exports = router

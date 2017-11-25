@@ -3,12 +3,6 @@
 const request = require('request')
 const mapper = require('../mapper')
 
-module.exports = {
-	getPublicRepositories,
-	getPrivateRepositories,
-	getMilestones
-}
-
 function getPublicRepositories(keyword, cb) {
 	const githubPublicRepositoriesURI = `https://api.github.com/search/repositories?q=${keyword}`
 	request(githubPublicRepositoriesURI,
@@ -66,4 +60,10 @@ function getMilestones(access_token, fullName, cb) {
 			const milestones = jsonMilestones.map(item => mapper.mapToMilestone(item)).filter( milestone => milestone.closed === null )
 			cb(null, milestones)
 		})
+}
+
+module.exports = {
+	getPublicRepositories,
+	getPrivateRepositories,
+	getMilestones
 }

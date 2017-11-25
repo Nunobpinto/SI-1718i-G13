@@ -4,11 +4,6 @@ const request = require('request')
 const mapper = require('../mapper')
 const global = require('../global')
 
-module.exports = {
-	postForGoogleToken,
-	postForGithubToken
-}
-
 function postForGoogleToken(code, cb) {
 	const googleAPIPostPath = 'https://www.googleapis.com/oauth2/v4/token'
 	const params = {
@@ -49,4 +44,9 @@ function postForGithubToken(code, cb) {
 			cb(null, data)
 		}
 	)
+}
+
+module.exports = {
+	postForGoogleToken,
+	postForGithubToken
 }

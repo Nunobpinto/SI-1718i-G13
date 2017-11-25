@@ -2,10 +2,6 @@
 
 const request = require('request')
 
-module.exports = {
-	postCalendarAllDayEvent
-}
-
 function postCalendarAllDayEvent(access_token, body, cb) {
 	const googlePostAllDayEventURI = 'https://www.googleapis.com/calendar/v3/calendars/primary/events'
 	const options = {
@@ -22,4 +18,8 @@ function postCalendarAllDayEvent(access_token, body, cb) {
 			return cb(err)
 		return cb(null, data)
 	})
+}
+
+module.exports = {
+	postCalendarAllDayEvent
 }

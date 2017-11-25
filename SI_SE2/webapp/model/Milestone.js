@@ -1,7 +1,5 @@
 'use strict'
 
-module.exports = Milestone
-
 function Milestone(title,description,created,closed,due) {
 	this.title = title
 	this.description = description === '' ? 'No description' : description
@@ -16,3 +14,5 @@ function Milestone(title,description,created,closed,due) {
 function getSimpleDate(date) {
 	return date === null ? null : date.split('T', 1).pop()
 }
+
+module.exports = Milestone

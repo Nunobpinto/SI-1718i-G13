@@ -1,6 +1,6 @@
 'use strict'
 
-const debug = require('debug')('webapp:auth')
+const debug = require('debug')('webapp:authRoute')
 const express = require('express')
 const router = express.Router()
 const query = require('querystring')
@@ -15,6 +15,7 @@ router.get('/', function(req, res) {
 })
 
 router.get('/github', function(req, res) {
+	debug('Received authentication request to github')
 	const token = req.csrfToken()
 	let queryString = query.stringify({
 		scope: 'repo user',
@@ -31,10 +32,13 @@ router.get(
 	checkState,
 	function(req, res, next) {
 		const code = req.query['code']
-		console.log('Authorization code is = ' + code)
+		debug('Received response from github with auth code ' + code)
 		authService.postForGithubToken(code, (err, data) => {
-			if( err )
+			if( err ) {
+				debug('Failed to exchanged code for github token')
 				return next(err)
+			}
+			debug('Successfully exchanged code for github token')
 			req.app.locals.github_token = data.access_token
 			res.redirect('/github/repos/private')
 		})
@@ -42,6 +46,7 @@ router.get(
 )
 
 router.get('/google/', function(req, res) {
+	debug('Received authentication request to google')
 	const token = req.csrfToken()
 	let queryString = query.stringify({
 		scope: 'openid https://www.googleapis.com/auth/calendar email profile',
@@ -60,10 +65,13 @@ router.get(
 	checkState,
 	function(req, res, next) {
 		const code = req.query['code']
-		debug('Authorization code is ' + code)
+		debug('Received response from google with auth code ' + code)
 		authService.postForGoogleToken(code, (err, user,token) => {
-			if( err )
+			if( err ) {
+				debug('Failed to exchanged code for google token')
 				return next(err)
+			}
+			debug('Successfully exchanged code for google token')
 			req.app.locals.user = user
 			res.cookie('google_id', idContainer.addToken(token))
 			res.redirect('/home')
@@ -73,11 +81,13 @@ router.get(
 
 function checkState(req, res, next) {
 	if( req.query.state !== req.cookies.state ) {
+		debug('Failed to validate csrfToken!!')
 		delete req.cookies.state
 		let err = new Error('state mismatch!')
 		err.statusCode = 401
 		return next(err)
 	}
+	debug('csrfToken validated')
 	delete req.cookies.state
 	next()
 }
