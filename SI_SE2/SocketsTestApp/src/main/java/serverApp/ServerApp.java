@@ -2,7 +2,6 @@ package serverApp;
 
 import javax.net.ssl.*;
 import java.io.*;
-import java.net.Socket;
 import java.security.KeyStore;
 import java.security.SecureRandom;
 import java.util.Arrays;
@@ -18,13 +17,13 @@ public class ServerApp {
         try (SSLServerSocket sslServerSocket = (SSLServerSocket) ssf.createServerSocket(HTTP_PORT)) {
             sslServerSocket.setNeedClientAuth(true);
             while(true) {
-                Socket clientSocket = sslServerSocket.accept();
+                SSLSocket clientSocket = (SSLSocket)sslServerSocket.accept();
                 processRequest(clientSocket);
             }
         }
     }
 
-    private void processRequest(Socket clientSocket) {
+    private void processRequest(SSLSocket clientSocket) {
         try(
                 BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 DataOutputStream out = new DataOutputStream(clientSocket.getOutputStream())
